@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transgirar - Sistema Integrado de Gestión</title>
+    <!-- Carga de Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuración para usar la fuente Inter y colores personalizados -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7fafc; /* Color de fondo general muy claro */
+        }
+        .policy-box {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .policy-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+    <!-- Icono de Transgirar (Placeholder) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2310b981' d='M12 2L2 22h20L12 2zm0 4l6.5 13H5.5L12 6z'/%3E%3C/svg%3E" type="image/svg+xml">
+</head>
+<body>
+
+    <!-- 1. Encabezado (Header) - Sticky -->
+    <header class="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo de Transgirar -->
+                <a href="#" class="flex items-center space-x-2 text-2xl font-bold text-emerald-600">
+                    <!-- Placeholder de Logo (Un círculo y el texto "Transgirar") -->
+                    <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+                    <span>Transgirar</span>
+                </a>
+
+                <!-- Menú de Navegación -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#inicio" class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Inicio</a>
+                    <a href="#mision" class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Misión</a>
+                    <a href="#vision" class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Visión</a>
+                    <a href="#aliados" class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Aliados</a>
+                    <a href="#politicas" class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Políticas</a>
+                    <a href="#contacto" class="text-white bg-emerald-600 px-4 py-1 rounded-lg shadow-md hover:bg-emerald-700 transition duration-150">Contáctanos</a>
+                </nav>
+
+                <!-- Botón de Menú Móvil (Hamburguesa) -->
+                <button class="md:hidden text-gray-600 hover:text-emerald-600 focus:outline-none" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+        <!-- Menú desplegable para móvil -->
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white shadow-lg border-t border-gray-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#inicio" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Inicio</a>
+                <a href="#mision" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Misión</a>
+                <a href="#vision" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Visión</a>
+                <a href="#aliados" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Aliados</a>
+                <a href="#politicas" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Políticas</a>
+                <a href="#contacto" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-emerald-600 text-center hover:bg-emerald-700 mt-2">Contáctanos</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Sección 2. Sobre Nosotros (Misión/Visión/Inicio) -->
+        <section id="inicio" class="py-16 bg-emerald-50 text-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h2 class="text-5xl font-extrabold text-emerald-800 mb-4">Transgirar</h2>
+                <p class="text-xl max-w-3xl mx-auto mb-8">
+                    Liderando la transformación en la gestión integral de riesgos y calidad. Transgirar es su socio estratégico para el cumplimiento normativo, la sostenibilidad y la excelencia operativa.
+                </p>
+                <div id="mision" class="inline-block p-4 m-2 bg-white rounded-xl shadow-lg w-full md:w-1/3 transition-shadow hover:shadow-xl">
+                    <h3 class="text-2xl font-semibold text-emerald-600 mb-2">Misión</h3>
+                    <p class="text-sm text-gray-600">Proveer soluciones innovadoras en sistemas de gestión, garantizando la seguridad, la transparencia y la optimización de los procesos de nuestros clientes.</p>
+                </div>
+                <div id="vision" class="inline-block p-4 m-2 bg-white rounded-xl shadow-lg w-full md:w-1/3 transition-shadow hover:shadow-xl">
+                    <h3 class="text-2xl font-semibold text-emerald-600 mb-2">Visión</h3>
+                    <p class="text-sm text-gray-600">Ser reconocidos como el referente nacional en la implementación y auditoría de Sistemas Integrados de Gestión, impulsando un futuro más ético y eficiente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3. Políticas del Sistema Integrado de Gestión -->
+        <section id="politicas" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">Políticas del Sistema Integrado de Gestión</h2>
+
+                <!-- Contenedor de Políticas en 2 Columnas -->
+                <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
+                    <!-- Política 1 -->
+                    <div class="policy-box bg-blue-50 p-6 rounded-2xl shadow-md border-t-4 border-blue-500">
+                        <span class="text-2xl font-extrabold text-blue-600 mr-3">1.</span>
+                        <h3 class="inline-block text-xl font-semibold text-gray-800 mb-3">Compromiso con la Calidad</h3>
+                        <p class="text-gray-600">
+                            Mejorar continuamente nuestros servicios y procesos, asegurando la satisfacción de las necesidades y expectativas de nuestros grupos de interés.
+                        </p>
+                    </div>
+
+                    <!-- Política 2 -->
+                    <div class="policy-box bg-purple-50 p-6 rounded-2xl shadow-md border-t-4 border-purple-500">
+                        <span class="text-2xl font-extrabold text-purple-600 mr-3">2.</span>
+                        <h3 class="inline-block text-xl font-semibold text-gray-800 mb-3">Prevención de Riesgos</h3>
+                        <p class="text-gray-600">
+                            Identificar, evaluar y controlar los riesgos operativos, de seguridad y de salud en el trabajo, minimizando los incidentes y promoviendo ambientes seguros.
+                        </p>
+                    </div>
+
+                    <!-- Política 3 -->
+                    <div class="policy-box bg-orange-50 p-6 rounded-2xl shadow-md border-t-4 border-orange-500">
+                        <span class="text-2xl font-extrabold text-orange-600 mr-3">3.</span>
+                        <h3 class="inline-block text-xl font-semibold text-gray-800 mb-3">Ética y Transparencia</h3>
+                        <p class="text-gray-600">
+                            Cero tolerancia frente a actos de corrupción, soborno y lavado de activos. Promovemos la conducta ética en todas nuestras operaciones internas y externas.
+                        </p>
+                    </div>
+
+                    <!-- Política 4 -->
+                    <div class="policy-box bg-red-50 p-6 rounded-2xl shadow-md border-t-4 border-red-500">
+                        <span class="text-2xl font-extrabold text-red-600 mr-3">4.</span>
+                        <h3 class="inline-block text-xl font-semibold text-gray-800 mb-3">Cumplimiento Legal</h3>
+                        <p class="text-gray-600">
+                            Garantizar el estricto cumplimiento de la legislación nacional e internacional aplicable a nuestros servicios y a los aspectos de nuestro Sistema de Gestión.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 4. Transgirar al Día (Eventos) -->
+        <section class="py-16 bg-gray-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">Transgirar al Día: Conciencia Global</h2>
+
+                <!-- Contenedor de Eventos en 3 Columnas -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- Tarjeta 1: Día contra la Corrupción -->
+                    <div class="bg-yellow-100 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                        <div class="flex items-center text-yellow-800 mb-4">
+                            <!-- Icono de Candado -->
+                            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            <h3 class="text-2xl font-bold">Día Anti-Corrupción</h3>
+                        </div>
+                        <p class="text-yellow-700 mb-4">
+                            9 de Diciembre: Promoviendo la integridad y la transparencia en todos los niveles de la administración pública y privada.
+                        </p>
+                        <a href="#" class="text-sm font-semibold text-yellow-900 hover:text-yellow-600">Leer más sobre nuestra iniciativa &rarr;</a>
+                    </div>
+
+                    <!-- Tarjeta 2: Prevención de Lavado de Activos -->
+                    <div class="bg-green-100 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                        <div class="flex items-center text-green-800 mb-4">
+                            <!-- Icono de Escudo/Seguridad -->
+                            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.01 12.01 0 002 15c0 5.42 3.332 9.948 8 11.857V18h4v3.857c4.668-1.909 8-6.437 8-11.857a12.01 12.01 0 00-2.382-7.016z"></path></svg>
+                            <h3 class="text-2xl font-bold">Prevención de LA/FT</h3>
+                        </div>
+                        <p class="text-green-700 mb-4">
+                            Fomentamos la vigilancia constante y la capacitación en la lucha contra el Lavado de Activos y la Financiación del Terrorismo.
+                        </p>
+                        <a href="#" class="text-sm font-semibold text-green-900 hover:text-green-600">Accede a nuestros recursos &rarr;</a>
+                    </div>
+
+                    <!-- Tarjeta 3: Día de la Seguridad y Salud -->
+                    <div class="bg-red-100 p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300">
+                        <div class="flex items-center text-red-800 mb-4">
+                            <!-- Icono de Corazón y Pulso -->
+                            <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                            <h3 class="text-2xl font-bold">Seguridad y Salud</h3>
+                        </div>
+                        <p class="text-red-700 mb-4">
+                            28 de Abril: Un compromiso diario con el bienestar físico y mental de todos nuestros colaboradores y asociados.
+                        </p>
+                        <a href="#" class="text-sm font-semibold text-red-900 hover:text-red-600">Ver nuestro plan SG-SST &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 5. Aliados -->
+        <section id="aliados" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-bold text-gray-800 text-center mb-10">Nuestros Aliados Estratégicos</h2>
+                <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+                    Trabajamos de la mano con líderes del sector para ofrecer soluciones de gestión de clase mundial.
+                </p>
+
+                <!-- Grid de Logos de Aliados (4 columnas en desktop, 2 en móvil) -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 items-center justify-center">
+                    <!-- Logo 1: Placeholder de Alta Resolución -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner flex justify-center items-center h-32">
+                        <img src="https://placehold.co/200x80/2980b9/ffffff?text=Partner+A" 
+                             alt="Logo Aliado A" 
+                             class="h-auto max-h-full w-auto max-w-full opacity-70 hover:opacity-100 transition duration-300"
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x80/cccccc/000000?text=Logo';"
+                        >
+                    </div>
+                    <!-- Logo 2 -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner flex justify-center items-center h-32">
+                        <img src="https://placehold.co/200x80/27ae60/ffffff?text=Consultora+X" 
+                             alt="Logo Aliado B" 
+                             class="h-auto max-h-full w-auto max-w-full opacity-70 hover:opacity-100 transition duration-300"
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x80/cccccc/000000?text=Logo';"
+                        >
+                    </div>
+                    <!-- Logo 3 -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner flex justify-center items-center h-32">
+                        <img src="https://placehold.co/200x80/f39c12/ffffff?text=Tecno+Solutions" 
+                             alt="Logo Aliado C" 
+                             class="h-auto max-h-full w-auto max-w-full opacity-70 hover:opacity-100 transition duration-300"
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x80/cccccc/000000?text=Logo';"
+                        >
+                    </div>
+                    <!-- Logo 4 -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner flex justify-center items-center h-32">
+                        <img src="https://placehold.co/200x80/8e44ad/ffffff?text=Riesgos+Corp" 
+                             alt="Logo Aliado D" 
+                             class="h-auto max-h-full w-auto max-w-full opacity-70 hover:opacity-100 transition duration-300"
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x80/cccccc/000000?text=Logo';"
+                        >
+                    </div>
+                    <!-- Logo 5 -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner flex justify-center items-center h-32">
+                        <img src="https://placehold.co/200x80/e74c3c/ffffff?text=Auditor+Global" 
+                             alt="Logo Aliado E" 
+                             class="h-auto max-h-full w-auto max-w-full opacity-70 hover:opacity-100 transition duration-300"
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x80/cccccc/000000?text=Logo';"
+                        >
+                    </div>
+                    <!-- Logo 6 -->
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-inner flex justify-center items-center h-32">
+                        <img src="https://placehold.co/200x80/34495e/ffffff?text=Soluciones+ISO" 
+                             alt="Logo Aliado F" 
+                             class="h-auto max-h-full w-auto max-w-full opacity-70 hover:opacity-100 transition duration-300"
+                             onerror="this.onerror=null; this.src='https://placehold.co/200x80/cccccc/000000?text=Logo';"
+                        >
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 6. Footer (Pie de página) -->
+    <footer id="contacto" class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Información de Contacto -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-emerald-400">Contáctanos</h3>
+                    <p class="mb-2">
+                        <span class="font-semibold">Dirección:</span> Carrera 10 # 20-30, Medellín, Colombia.
+                    </p>
+                    <p class="mb-2">
+                        <span class="font-semibold">Teléfono:</span> 
+                        <a href="tel:+576041234567" class="hover:text-emerald-400 transition duration-150">
+                            +57 604 123 4567
+                        </a>
+                    </p>
+                    <p class="mb-2">
+                        <span class="font-semibold">Email:</span> 
+                        <a href="mailto:info@transgirar.co" class="hover:text-emerald-400 transition duration-150">
+                            info@transgirar.co
+                        </a>
+                    </p>
+                </div>
+
+                <!-- Enlaces Rápidos -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-emerald-400">Enlaces</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#inicio" class="hover:text-emerald-400 transition duration-150">Inicio</a></li>
+                        <li><a href="#mision" class="hover:text-emerald-400 transition duration-150">Misión & Visión</a></li>
+                        <li><a href="#politicas" class="hover:text-emerald-400 transition duration-150">Políticas SIG</a></li>
+                        <li><a href="#aliados" class="hover:text-emerald-400 transition duration-150">Aliados</a></li>
+                    </ul>
+                </div>
+
+                <!-- Mapa de Ubicación (Placeholder) -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-emerald-400">Ubicación</h3>
+                    <!-- Placeholder de Iframe para el mapa -->
+                    <div class="w-full h-40 bg-gray-700 rounded-lg shadow-inner flex items-center justify-center text-gray-400 text-sm border border-gray-600">
+                        Mapa de Ubicación (Google Maps Embed Placeholder)
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="mt-8 pt-6 border-t border-gray-700 text-center text-sm text-gray-400">
+                &copy; 2024 Transgirar. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
