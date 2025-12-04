@@ -27,134 +27,86 @@
 <body class="bg-gray-50 text-gray-800">
 
     <!-- ENCABEZADO (HEADER) -->
-    <!-- Sticky, fondo blanco, borde inferior claro -->
-    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <!-- Icono simulando logo de transporte -->
-                    <div class="bg-green-600 text-white p-2 rounded-lg">
-                        <i class="fa-solid fa-truck-fast text-xl"></i>
-                    </div>
-                    <span class="font-bold text-2xl text-green-800 tracking-tight">TRANSGIRAR</span>
-                </div>
+    <!-- 1. Encabezado (Header) - Sticky -->
+    <header class="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo de Transgirar -->
+                <a href="#" class="flex items-center space-x-2 text-2xl font-bold text-emerald-600">
+                    <!-- Placeholder de Logo (Un círculo y el texto "Transgirar") -->
+                    <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+                    <span>Transgirar</span>
+                </a>
 
-                <!-- Menú de Navegación (Desktop) -->
+                <!-- Menú de Navegación -->
                 <nav class="hidden md:flex space-x-8">
                     <a href="#inicio"
-                        class="text-gray-600 hover:text-green-600 font-medium transition duration-150">Inicio</a>
-                    <a href="#sobre-nosotros"
-                        class="text-gray-600 hover:text-green-600 font-medium transition duration-150">Misión y
-                        Visión</a>
-                    <a href="#politicas"
-                        class="text-gray-600 hover:text-green-600 font-medium transition duration-150">Políticas</a>
-                    <a href="#noticias"
-                        class="text-gray-600 hover:text-green-600 font-medium transition duration-150">Al Día</a>
+                        class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Inicio</a>
+                    <a href="#mision"
+                        class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Misión</a>
+                    <a href="#vision"
+                        class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Visión</a>
                     <a href="#aliados"
-                        class="text-gray-600 hover:text-green-600 font-medium transition duration-150">Aliados</a>
+                        class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Aliados</a>
+                    <a href="#politicas"
+                        class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Políticas</a>
                     <a href="#contacto"
-                        class="px-4 py-2 rounded-md bg-green-600 text-white hover:bg-green-700 transition duration-150 font-medium">Contáctanos</a>
+                        class="text-white bg-emerald-600 px-4 py-1 rounded-lg shadow-md hover:bg-emerald-700 transition duration-150">Contáctanos</a>
                 </nav>
 
-                <!-- Botón Menú Móvil -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none">
-                        <i class="fa-solid fa-bars text-2xl"></i>
-                    </button>
-                </div>
+                <!-- Botón de Menú Móvil (Hamburguesa) -->
+                <button class="md:hidden text-gray-600 hover:text-emerald-600 focus:outline-none"
+                    onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
             </div>
         </div>
-
-        <!-- Menú Móvil (Oculto por defecto) -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+        <!-- Menú desplegable para móvil -->
+        <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white shadow-lg border-t border-gray-100">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <a href="#inicio"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50">Inicio</a>
-                <a href="#sobre-nosotros"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50">Sobre
-                    Nosotros</a>
-                <a href="#politicas"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50">Políticas</a>
-                <a href="#noticias"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50">Al
-                    Día</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Inicio</a>
+                <a href="#mision"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Misión</a>
+                <a href="#vision"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Visión</a>
                 <a href="#aliados"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-green-600 hover:bg-gray-50">Aliados</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Aliados</a>
+                <a href="#politicas"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Políticas</a>
                 <a href="#contacto"
-                    class="block px-3 py-2 rounded-md text-base font-medium text-green-600 font-bold hover:bg-gray-50">Contáctanos</a>
+                    class="block px-3 py-2 rounded-md text-base font-medium text-white bg-emerald-600 text-center hover:bg-emerald-700 mt-2">Contáctanos</a>
             </div>
         </div>
     </header>
 
-    <!-- SECCIÓN INICIO (HERO SIMPLE) -->
-    <div id="inicio" class="relative bg-white overflow-hidden">
-        <div class="max-w-7xl mx-auto">
-            <div class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-                <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                    <div class="sm:text-center lg:text-left">
-                        <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                            <span class="block xl:inline">Transporte seguro y</span>
-                            <span class="block text-green-600 xl:inline">logística eficiente</span>
-                        </h1>
-                        <p
-                            class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                            Conectamos destinos con responsabilidad y compromiso. Su carga en las mejores manos.
-                        </p>
-                    </div>
-                </main>
+    <!-- Sección 2. Sobre Nosotros (Misión/Visión/Inicio) -->
+    <section id="inicio" class="py-16 bg-emerald-50 text-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-5xl font-extrabold text-emerald-800 mb-4">Transgirar</h2>
+            <p class="text-xl max-w-3xl mx-auto mb-8">
+                Liderando la transformación en la gestión integral de riesgos y calidad. Transgirar es su socio
+                estratégico para el cumplimiento normativo, la sostenibilidad y la excelencia operativa.
+            </p>
+            <div id="mision"
+                class="inline-block p-4 m-2 bg-white rounded-xl shadow-lg w-full md:w-1/3 transition-shadow hover:shadow-xl">
+                <h3 class="text-2xl font-semibold text-emerald-600 mb-2">Misión</h3>
+                <p class="text-sm text-gray-600">Proveer soluciones innovadoras en sistemas de gestión, garantizando la
+                    seguridad, la transparencia y la optimización de los procesos de nuestros clientes.</p>
+            </div>
+            <div id="vision"
+                class="inline-block p-4 m-2 bg-white rounded-xl shadow-lg w-full md:w-1/3 transition-shadow hover:shadow-xl">
+                <h3 class="text-2xl font-semibold text-emerald-600 mb-2">Visión</h3>
+                <p class="text-sm text-gray-600">Ser reconocidos como el referente nacional en la implementación y
+                    auditoría de Sistemas Integrados de Gestión, impulsando un futuro más ético y eficiente.</p>
             </div>
         </div>
-        <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2 bg-gray-100 flex items-center justify-center">
-            <!-- Placeholder de imagen -->
-            <div class="text-gray-300">
-                <i class="fa-solid fa-road text-9xl opacity-20"></i>
-            </div>
-        </div>
+    </section>
     </div>
-
-    <!-- SECCIÓN SOBRE NOSOTROS -->
-    <!-- Fondo verde claro y texto oscuro -->
-    <section id="sobre-nosotros" class="bg-green-50 py-16">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-12">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">TRANSGIRAR</h2>
-                <div class="w-24 h-1 bg-green-500 mx-auto mt-4 mb-6"></div>
-                <p class="text-lg text-gray-700 leading-relaxed">
-                    Somos una organización dedicada a la prestación de servicios de transporte de carga terrestre,
-                    comprometidos con la satisfacción de nuestros clientes mediante soluciones logísticas integrales.
-                </p>
-            </div>
-
-            <!-- Misión y Visión Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-10">
-                <div class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-green-500">
-                    <div class="flex items-center mb-4">
-                        <div class="bg-green-100 p-3 rounded-full mr-4">
-                            <i class="fa-solid fa-bullseye text-green-600 text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-800">Misión</h3>
-                    </div>
-                    <p class="text-gray-600">
-                        Proveer servicios de transporte seguros y oportunos, garantizando la integridad de la carga y el
-                        bienestar de nuestro talento humano, contribuyendo al desarrollo sostenible del país.
-                    </p>
-                </div>
-
-                <div class="bg-white p-8 rounded-xl shadow-sm border-l-4 border-blue-500">
-                    <div class="flex items-center mb-4">
-                        <div class="bg-blue-100 p-3 rounded-full mr-4">
-                            <i class="fa-solid fa-eye text-blue-600 text-xl"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-gray-800">Visión</h3>
-                    </div>
-                    <p class="text-gray-600">
-                        Para el año 2030, seremos reconocidos como líderes nacionales en transporte de carga,
-                        destacándonos por nuestra innovación tecnológica, flota moderna y excelencia operativa.
-                    </p>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- SECCIÓN POLÍTICAS DEL SISTEMA INTEGRADO -->
@@ -352,15 +304,15 @@
                     <ul class="space-y-3 text-gray-300">
                         <li class="flex items-start">
                             <i class="fa-solid fa-location-dot mt-1 mr-3 text-gray-500"></i>
-                            <span>Calle 123 # 45-67, Zona Industrial<br>Antioquia, Colombia</span>
+                            <span>Carrera 14 #8-12, Barrio Centro<br>Girardota - Antioquia, Colombia</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fa-solid fa-phone mr-3 text-gray-500"></i>
-                            <span>+57 (604) 123 4567</span>
+                            <span>+57 (604) 463-8067 - +57 314 794 1756</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fa-solid fa-envelope mr-3 text-gray-500"></i>
-                            <span>contacto@transgirar.com</span>
+                            <span>davidhoyos@transgirar.com</span>
                         </li>
                     </ul>
                 </div>
@@ -369,7 +321,7 @@
                 <div class="rounded-lg overflow-hidden h-48 bg-gray-800 relative">
                     <!-- Mapa embebido (Placeholder) -->
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.556209210287!2d-75.4496!3d6.3211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMTknMTYuMCJOIDc1wrAyNycwMC4wIlc!5e0!3m2!1ses!2sco!4v1620000000000!5m2!1ses!2sco"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.55!2d-75.4450!3d6.3770!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e44289b1b1c9f5d%3A0x5f0e3d41a89c6c0f!2sCarrera%2014%20%238-12%2C%20Girardota%2C%20Antioquia%2C%20Colombia!5e0!3m2!1ses!2sco!4v1700000000000!5m2!1ses!2sco"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                         class="map-grayscale hover:filter-none transition duration-500">
                     </iframe>
@@ -378,7 +330,7 @@
 
             <div class="border-t border-gray-800 mt-12 pt-8 text-center">
                 <p class="text-gray-500 text-sm">
-                    &copy; 2023 Transgirar S.A.S. Todos los derechos reservados.
+                    &copy; 2025 Transgirar S.A.S. Todos los derechos reservados.
                 </p>
             </div>
         </div>
