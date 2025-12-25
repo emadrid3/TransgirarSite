@@ -29,6 +29,7 @@
     <!-- ENCABEZADO (HEADER) -->
     <!-- 1. Encabezado (Header) - Sticky -->
     <header class="sticky top-0 z-50 bg-white shadow-md border-b border-gray-200">
+        <!-- Navegación Principal -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo de Transgirar -->
@@ -40,11 +41,11 @@
 
                 <!-- Menú de Navegación -->
                 <nav class="hidden md:flex space-x-8">
-                    <a href="#inicio"
+                    <a href="#carrusel"
                         class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Inicio</a>
-                    <a href="#mision"
+                    <a href="#inicio"
                         class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Misión</a>
-                    <a href="#vision"
+                    <a href="#inicio"
                         class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Visión</a>
                     <a href="#politicas"
                         class="text-gray-600 hover:text-emerald-600 transition duration-150 font-medium">Políticas</a>
@@ -68,7 +69,7 @@
         <!-- Menú desplegable para móvil -->
         <div id="mobile-menu" class="hidden md:hidden absolute w-full bg-white shadow-lg border-t border-gray-100">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#inicio"
+                <a href="#carrusel"
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Inicio</a>
                 <a href="#mision"
                     class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Misión</a>
@@ -83,11 +84,113 @@
             </div>
         </div>
     </header>
+    <!-- CARRUSEL Component-->
+        <section id="carrusel" class="relative w-full h-full overflow-hidden bg-emerald-950">
 
-    <!-- Sección 2. Sobre Nosotros (Misión/Visión/Inicio) -->
+            <!-- Slides -->
+            <div id="carousel-inner"
+                class="flex h-full transition-transform duration-700 ease-in-out">
+
+                <!-- SLIDE 1 - BASC -->
+                <div class="min-w-full h-full flex items-center px-6 md:px-20">
+                    <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        
+                        <!-- Texto -->
+                        <div class="order-2 md:order-1">
+                            <span class="inline-block mb-4 px-4 py-1 text-xs font-bold rounded-full
+                                        bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                HITO 2024 – 2026
+                            </span>
+
+                            <h1 class="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-6">
+                                Certificación BASC <br>
+                                <span class="text-emerald-400">3 Años Consecutivos</span>
+                            </h1>
+
+                            <p class="text-gray-300 text-lg max-w-md mb-8">
+                                Operamos bajo los más altos estándares internacionales de seguridad,
+                                garantizando confianza total en cada operación logística.
+                            </p>
+                        </div>
+
+                        <!-- Imagen -->
+                        <div class="order-1 md:order-2">
+                            <div class="aspect-square rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                                <img src="https://laboratoriosedo.com/wp-content/uploads/2025/05/Certificado-BASC-COL.png"
+                                    class="w-full h-full object-cover"
+                                    alt="Certificación BASC">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+              <!-- SLIDE 2 – EXPERIENCIA DESDE 2007 -->
+                <div class="min-w-full h-full flex items-center px-6 md:px-20">
+                    <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+
+                        <!-- TEXTO -->
+                        <div class="order-2 md:order-1">
+                            <span class="inline-block mb-4 px-4 py-1 text-xs font-bold rounded-full
+                                        bg-orange-500/20 text-orange-300 border border-orange-500/30">
+                                EXPERIENCIA QUE RESPALDA
+                            </span>
+
+                            <h2 class="text-4xl md:text-5xl font-extrabold text-white leading-tight mb-6">
+                                Desde <span class="text-orange-400">2007</span> <br>
+                                Moviendo el Crecimiento del País
+                            </h2>
+
+                            <p class="text-gray-300 text-lg mb-5 max-w-xl">
+                                Más de una década de experiencia certifica la calidad de nuestros servicios de
+                                <strong>transporte terrestre de carga seca en modalidad masiva</strong>,
+                                con la firme intención de aportar al desarrollo y crecimiento empresarial de Colombia.
+                            </p>
+
+                            <p class="text-gray-300 text-base mb-8 max-w-xl">
+                                Garantizamos el transporte de mercancías a nivel nacional de forma
+                                <strong>ágil, segura y conforme a la normatividad vigente</strong>.
+                                Operamos flota tipo <strong>Turbo, Sencillos y Tracto-camiones</strong>,
+                                con capacidades desde <strong>2 hasta 35 toneladas</strong>,
+                                cumpliendo a cabalidad los requerimientos de nuestros clientes,
+                                siempre con un servicio confiable y una atención de excelencia.
+                            </p>
+
+                            <a href="#contacto"
+                            class="inline-block bg-orange-500 hover:bg-orange-600
+                                    text-white px-8 py-3 rounded-xl font-bold transition-transform hover:scale-105">
+                                Solicitar Cotización
+                            </a>
+                        </div>
+
+                        <!-- IMAGEN -->
+                        <div class="order-1 md:order-2">
+                            <div class="aspect-square rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                                <img src="https://shacmancolombia.com/wp-content/uploads/elementor/thumbs/21-scaled-p9f4ugf1xtq2crbgsiuj05cdccyj1yehh3emwdsq2o.jpg"
+                                    class="w-full h-full object-cover"
+                                    alt="Transporte terrestre de carga en Colombia">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Indicadores -->
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
+                <button class="dot w-10 h-2 rounded-full bg-white opacity-100"
+                        onclick="goToSlide(0)"></button>
+                <button class="dot w-10 h-2 rounded-full bg-white opacity-40"
+                        onclick="goToSlide(1)"></button>
+            </div>
+
+        </section>
+
+    <!-- Finaliza codigo carrusel -->
+  <!-- Sección 2. Sobre Nosotros (Misión/Visión/Inicio) -->
     <section id="inicio" class="py-16 bg-emerald-50 text-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-5xl font-extrabold text-emerald-800 mb-4">Transgirar</h2>
+            <h2 class="text-5xl font-extrabold text-emerald-800 mb-4">Transgirar S.A</h2>
             <p class="text-xl max-w-3xl mx-auto mb-8">
                 Somos una empresa colombiana especializada en el transporte terrestre de mercancías,
                 ofreciendo soluciones masivas confiables que aportan al crecimiento empresarial del país.
@@ -670,10 +773,39 @@
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
 
-        btn.addEventListener('click', () => {
+        /* Borrar luego */
+
+        /* btn.addEventListener('click', () => {
             menu.classList.toggle('hidden');
-        });
+        }); */
     </script>
+   <!--  Codigo funcionalidad carrusel -->
+     <script>
+        let currentSlide = 0;
+        const totalSlides = 2;
+        const carousel = document.getElementById("carousel-inner");
+        const dots = document.querySelectorAll(".dot");
+
+        function updateCarousel() {
+            carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle("opacity-100", i === currentSlide);
+                dot.classList.toggle("opacity-40", i !== currentSlide);
+            });
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+        }
+
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            updateCarousel();
+        }, 6000);
+     </script>
+    <!-- Finaliza codigo CARRUSEL -->
 </body>
 
 </html>
