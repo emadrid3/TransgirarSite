@@ -1,0 +1,20 @@
+[
+  {
+    "username": "andres.gil",
+    "salt": "cFEJ5BVGql4e2s0+hEzvTA==",
+    "iv": "jeT/HGuIgjp03a0x",
+    "data": "84D4yr/GQ3VOBFDs/owDrSC5jX1rmH7FX8xCq/g="
+  },
+  {
+    "username": "emadrid3",
+    "salt": "4VaLJwTz8xWFb4OjBySEHA==",
+    "iv": "bMrWIB5jKYEUk6fK",
+    "data": "FCcrr14N03RZYYJRpa74XS+MvL+uXG+Zlz6UaVM="
+  },
+  {
+    "username": "logistica",
+    "salt": "3X0Q+WqcFIeqgN8J7Owh3A==",
+    "iv": "EPn3opJRHbb6d2i2",
+    "data": "EillraloecCc3HJ4Aj3lc6qcaLJeglGVw+tOBmA="
+  }
+]
