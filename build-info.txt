@@ -12,7 +12,7 @@
     "data": "FCcrr14N03RZYYJRpa74XS+MvL+uXG+Zlz6UaVM="
   },
   {
-    "username": "Transgirar",
+    "username": "transgirar",
     "salt": "UljC/2gx27fT2hotL1aCMA==",
     "iv": "eTzIyZI5Wy5QbCR5",
     "data": "4dyUfQjakvsKd1yzE0XNKj5Qd7gpRGUnDRlMU1g="
