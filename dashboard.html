@@ -93,15 +93,7 @@ header.top .brand{display:flex;align-items:center;gap:12px;}
 header.top .brand .logo{width:46px;height:46px;border-radius:10px;object-fit:cover;display:block;box-shadow:0 2px 4px rgba(0,0,0,.18), 0 0 0 1px rgba(0,0,0,.06);background:#0b1f3a;}
 header.top h1{font-size:19px;margin:0;font-weight:bold;color:var(--black);}
 header.top .sub{font-size:12px;color:var(--gray);margin-top:2px;}
-.top-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-.action-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.action-divider{width:1px;align-self:stretch;min-height:28px;background:var(--line);}
-.user-pill{display:flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px 5px 8px;border-radius:20px;background:#f4f6f5;border:1px solid var(--line);color:var(--gray);white-space:nowrap;}
-.user-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green-500);flex-shrink:0;}
-.user-pill b{color:var(--black);font-weight:bold;}
-.upload-locked{opacity:.45;cursor:not-allowed !important;pointer-events:none;}
-.upload-locked:hover{transform:none !important;}
-.lock-note{font-size:10.5px;color:var(--gray);display:flex;align-items:center;gap:4px;}
+.top-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
 
 /* ---- Botones con volumen (efecto elevado / táctil) ---- */
 button, .btn{
@@ -143,7 +135,36 @@ button.ghost:active{ box-shadow:0 1px 0 #ddd, 0 1px 4px rgba(0,0,0,.06); }
 .chips{display:flex;flex-wrap:wrap;gap:6px;max-width:520px;}
 .chip{font-size:12px;padding:5px 10px;border-radius:20px;border:1px solid var(--line);background:#fff;cursor:pointer;user-select:none;color:var(--black);}
 .chip.active{background:var(--green-600);border-color:var(--green-600);color:#fff;}
-select, input[type=text]{font-family:Arial;font-size:13px;padding:7px 9px;border-radius:6px;border:1px solid var(--line);color:var(--black);background:#fff;}
+select, input[type=text], input[type=date]{font-family:Arial;font-size:13px;padding:7px 9px;border-radius:6px;border:1px solid var(--line);color:var(--black);background:#fff;}
+select.fselect[multiple]{min-width:170px;min-height:110px;}
+.fmini-actions{display:flex;gap:6px;margin-top:6px;}
+button.mini{padding:4px 9px;font-size:11px;border-radius:6px;box-shadow:0 2px 0 #ddd, 0 3px 6px rgba(0,0,0,.06);}
+button.mini:hover{transform:translateY(-1px);}
+
+/* ---- Dropdown de selección múltiple (Año / Mes): clic simple por opción, sin Ctrl/Cmd ---- */
+.msdd{position:relative;min-width:170px;}
+.msdd-toggle{width:100%;text-align:left;background:#fff;color:var(--black);border:1px solid var(--line);
+  box-shadow:none;font-weight:normal;padding:7px 10px;border-radius:6px;
+  display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;}
+.msdd-toggle:hover{transform:none;box-shadow:none;background:#fafafa;}
+.msdd-toggle:active{transform:none;box-shadow:none;}
+.msdd-toggle .caret{font-size:10px;color:var(--gray);}
+.msdd-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:30;background:#fff;
+  border:1px solid var(--line);border-radius:8px;box-shadow:0 10px 26px rgba(0,0,0,.14);padding:8px;
+  min-width:210px;max-width:300px;}
+.msdd.open .msdd-panel{display:block;}
+.msdd-panel-wide{min-width:270px;max-width:330px;}
+.msdd-search{width:100%;box-sizing:border-box;margin-bottom:8px;padding:6px 8px;font-size:12.5px;}
+.msdd-actions{display:flex;gap:6px;margin-bottom:8px;}
+.msdd-options{max-height:230px;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
+.msdd-opt{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:5px 6px;border-radius:5px;cursor:pointer;user-select:none;}
+.msdd-opt:hover{background:var(--green-50);}
+.msdd-opt input[type=checkbox]{cursor:pointer;accent-color:var(--green-600);}
+.msdd-opt.hidden-by-search{display:none;}
+.msdd-noresults{font-size:12px;color:var(--gray);padding:8px 4px;display:none;}
+.rango-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.rango-row .flabel{margin:0;}
+#rangoResult .rango-empty{color:var(--gray);font-size:13px;padding:10px 0;}
 select[multiple]{min-width:200px;min-height:74px;}
 .filters .fbottom{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;color:var(--gray);}
 
@@ -204,13 +225,6 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
 </head>
 <body>
 
-<script>
-  // Chequeo de acceso (solo del lado del navegador — ver nota en README/SETUP)
-  if (!sessionStorage.getItem('transgirar_auth')) {
-    window.location.href = './login.html';
-  }
-</script>
-
 <div id="libBanner" style="display:none;background:#fff7ed;border-bottom:2px solid #b45309;color:#7c2d12;padding:10px 20px;font-size:12.5px;text-align:center;"></div>
 <header class="top">
   <div class="brand">
@@ -221,44 +235,12 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     </div>
   </div>
   <div class="top-actions">
-    <div class="action-group">
-      <span class="status-pill" id="dataStatus">Cargando datos…</span>
-      <button class="secondary" id="btnRestore" style="display:none;">Restaurar datos originales</button>
-      <button id="btnUpload">Cargar Excel del día</button>
-      <input type="file" id="fileInput" accept=".xlsx,.xls">
-      <span class="lock-note" id="lockNote" style="display:none;">
-        <i class="fa-solid fa-lock" style="font-size:10px;"></i> Solo autorizados pueden cargar archivos
-      </span>
-    </div>
-    <div class="action-divider"></div>
-    <div class="action-group">
-      <span class="user-pill" id="userLabel"><span class="dot"></span></span>
-      <button class="ghost" id="btnLogout" type="button">Cerrar sesión</button>
-    </div>
+    <span class="status-pill" id="dataStatus">Cargando datos…</span>
+    <button class="secondary" id="btnRestore" style="display:none;">Restaurar datos originales</button>
+    <button id="btnUpload">Cargar Excel del día</button>
+    <input type="file" id="fileInput" accept=".xlsx,.xls">
   </div>
 </header>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script>
-  // Usuario y logout
-  const currentUser = sessionStorage.getItem('transgirar_auth') || '';
-  document.getElementById('userLabel').innerHTML = '<span class="dot"></span><b>' + currentUser + '</b>';
-  document.getElementById('btnLogout').addEventListener('click', function () {
-    sessionStorage.removeItem('transgirar_auth');
-    window.location.href = './login.html';
-  });
-
-  // Restricción de carga: solo estos usuarios pueden subir un Excel nuevo.
-  // Nota: es una restricción visual/de conveniencia (corre en el navegador),
-  // no una barrera de seguridad real — ver README/SETUP.
-  const ALLOWED_UPLOADERS = ['andres.gil', 'emadrid3'];
-  if (!ALLOWED_UPLOADERS.includes(currentUser.toLowerCase())) {
-    const btn = document.getElementById('btnUpload');
-    btn.classList.add('upload-locked');
-    btn.disabled = true;
-    btn.title = 'Solo andres.gil o emadrid3 pueden cargar un nuevo archivo';
-    document.getElementById('lockNote').style.display = 'inline-flex';
-  }
-</script>
 
 <div class="wrap">
 
@@ -266,11 +248,29 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     <div class="frow">
       <div class="fgroup">
         <label class="flabel">Año</label>
-        <div class="chips" id="fAnio"></div>
+        <div class="msdd" id="msddAnio">
+          <button type="button" class="msdd-toggle" id="ddAnioToggle"><span class="msdd-label">Todos</span><span class="caret">▾</span></button>
+          <div class="msdd-panel" id="ddAnioPanel">
+            <div class="msdd-actions">
+              <button type="button" class="ghost mini" id="btnAnioTodos">Marcar todos</button>
+              <button type="button" class="ghost mini" id="btnAnioLimpiar">Limpiar</button>
+            </div>
+            <div class="msdd-options" id="fAnioOptions"></div>
+          </div>
+        </div>
       </div>
       <div class="fgroup">
         <label class="flabel">Mes</label>
-        <div class="chips" id="fMes"></div>
+        <div class="msdd" id="msddMes">
+          <button type="button" class="msdd-toggle" id="ddMesToggle"><span class="msdd-label">Todos</span><span class="caret">▾</span></button>
+          <div class="msdd-panel" id="ddMesPanel">
+            <div class="msdd-actions">
+              <button type="button" class="ghost mini" id="btnMesTodos">Marcar todos</button>
+              <button type="button" class="ghost mini" id="btnMesLimpiar">Limpiar</button>
+            </div>
+            <div class="msdd-options" id="fMesOptions"></div>
+          </div>
+        </div>
       </div>
       <div class="fgroup">
         <label class="flabel">Tipo de vehículo</label>
@@ -280,15 +280,37 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
         <label class="flabel">Tipo de viaje</label>
         <div class="chips" id="fTipoViaje"></div>
       </div>
-      <div class="fgroup">
+      <div class="fgroup" style="min-width:220px;">
         <label class="flabel">Empresa</label>
-        <select id="fEmpresa" multiple></select>
+        <div class="msdd" id="msddEmpresa">
+          <button type="button" class="msdd-toggle" id="ddEmpresaToggle"><span class="msdd-label">Todas</span><span class="caret">▾</span></button>
+          <div class="msdd-panel msdd-panel-wide" id="ddEmpresaPanel">
+            <input type="text" id="fEmpresaSearch" class="msdd-search" placeholder="Buscar empresa…" autocomplete="off">
+            <div class="msdd-actions">
+              <button type="button" class="ghost mini" id="btnEmpresaTodos">Marcar todas</button>
+              <button type="button" class="ghost mini" id="btnEmpresaLimpiar">Limpiar</button>
+            </div>
+            <div class="msdd-options" id="fEmpresaOptions"></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="fbottom">
       <span id="filterSummary">Mostrando todos los registros</span>
       <button class="ghost" id="btnResetFilters">Limpiar filtros</button>
     </div>
+  </div>
+
+  <div class="card" id="empresaLookupCard">
+    <h3>Consultar empresa</h3>
+    <div class="placa-search-row">
+      <input type="text" id="empresaSearch" list="empresaList" placeholder="Escribe o elige una empresa…" autocomplete="off">
+      <datalist id="empresaList"></datalist>
+      <button id="btnBuscarEmpresa">Ver operaciones</button>
+      <button class="ghost" id="btnLimpiarEmpresa">Limpiar</button>
+    </div>
+    <div class="note">Escribe el nombre o ábrelo como lista desplegable (flecha del campo) para elegir una empresa. Este historial muestra <b>todos los años</b> de la empresa, sin importar los filtros de arriba.</div>
+    <div id="empresaResult"></div>
   </div>
 
   <div class="kpis" id="kpiRow"></div>
@@ -372,6 +394,21 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
     </div>
     <div class="note">Busca por placa completa o parcial. Este historial muestra <b>todos los años</b> del vehículo, sin importar los filtros de arriba.</div>
     <div id="placaResult"></div>
+  </div>
+
+  <h2 class="section-title">Resumen por rango de fechas</h2>
+  <div class="card">
+    <h3>Selecciona un periodo</h3>
+    <div class="rango-row">
+      <label class="flabel">Desde</label>
+      <input type="date" id="rangoDesde">
+      <label class="flabel">Hasta</label>
+      <input type="date" id="rangoHasta">
+      <button id="btnRangoCalcular">Calcular resumen</button>
+      <button class="ghost" id="btnRangoLimpiar">Limpiar</button>
+    </div>
+    <div class="note">Este resumen es independiente de los filtros de arriba: usa únicamente el rango de fechas elegido aquí (según la columna FECHA del manifiesto).</div>
+    <div id="rangoResult"></div>
   </div>
 
   <h2 class="section-title">Facturación pendiente</h2>
@@ -508,6 +545,8 @@ function bootInner(){
   document.getElementById('footerDate').textContent = new Date().toLocaleString('es-CO');
   initFilters();
   initPlacaSearch();
+  initEmpresaSearch();
+  initRangoResumen();
   renderAll();
 
   document.getElementById('btnUpload').addEventListener('click', ()=>document.getElementById('fileInput').click());
@@ -517,7 +556,7 @@ function bootInner(){
     RAW = embedded;
     setStatus('Datos originales del archivo entregado');
     document.getElementById('btnRestore').style.display='none';
-    initFilters(); initPlacaSearch(); renderAll();
+    initFilters(); initPlacaSearch(); initEmpresaSearch(); initRangoResumen(); renderAll();
   });
   document.getElementById('btnResetFilters').addEventListener('click', ()=>{ initFilters(); renderAll(); });
 }
@@ -715,6 +754,8 @@ function handleUpload(ev){
       }
       initFilters();
       initPlacaSearch();
+      initEmpresaSearch();
+      initRangoResumen();
       renderAll();
       const anuladoMsg = totalSkippedYellow>0 ? (' Se excluyeron '+totalSkippedYellow+' manifiestos anulados.') : '';
       toast('Archivo cargado correctamente: '+rows.length+' registros.'+anuladoMsg);
@@ -732,6 +773,97 @@ const SIN_EMPRESA = '(Sin empresa)';
 function empresaKey(r){ return r[IDX.empresa]===null ? SIN_EMPRESA : r[IDX.empresa]; }
 const SIN_TIPO_VIAJE = '(Sin clasificar)';
 function tipoViajeKey(r){ return r[IDX.tipo_viaje]===null ? SIN_TIPO_VIAJE : r[IDX.tipo_viaje]; }
+
+/* Dropdown de selección múltiple con casillas: cada opción se marca/desmarca con un
+   solo clic (sin necesidad de Ctrl/Cmd), y el panel permanece abierto para poder
+   marcar varias a la vez y armar comparativas. */
+let __openDropdownWraps = [];
+function closeAllMultiDropdowns(){
+  __openDropdownWraps.forEach(w=>w.classList.remove('open'));
+}
+function setupMultiDropdown(cfg){
+  const wrap = document.getElementById(cfg.wrapId);
+  const toggle = document.getElementById(cfg.toggleId);
+  const panel = document.getElementById(cfg.panelId);
+  const optsWrap = document.getElementById(cfg.optionsId);
+  const todosBtn = document.getElementById(cfg.todosId);
+  const limpiarBtn = document.getElementById(cfg.limpiarId);
+  const labelEl = toggle.querySelector('.msdd-label');
+
+  if (__openDropdownWraps.indexOf(wrap)===-1) __openDropdownWraps.push(wrap);
+  panel.onclick = (ev)=>ev.stopPropagation();
+
+  optsWrap.innerHTML = '';
+  const checkboxes = [];
+  const entries = []; // {row, label(lowercase), cb}
+  cfg.values.forEach(v=>{
+    const row = document.createElement('label'); row.className='msdd-opt';
+    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = cfg.getSet().has(v);
+    cb.onchange = ()=>{
+      const s = new Set(cfg.getSet());
+      if (cb.checked) s.add(v); else s.delete(v);
+      cfg.setSet(s);
+      updateSummary();
+      afterFilterChange();
+    };
+    const label = cfg.labelFn(v);
+    const txt = document.createElement('span'); txt.textContent = label;
+    row.appendChild(cb); row.appendChild(txt);
+    optsWrap.appendChild(row);
+    checkboxes.push(cb);
+    entries.push({ row, cb, label: String(label).toLowerCase() });
+  });
+
+  let noResultsEl = null;
+  const searchInput = cfg.searchId ? document.getElementById(cfg.searchId) : null;
+  if (searchInput){
+    noResultsEl = document.createElement('div'); noResultsEl.className='msdd-noresults';
+    noResultsEl.textContent = 'Sin coincidencias.';
+    optsWrap.appendChild(noResultsEl);
+    searchInput.value = '';
+    searchInput.onclick = (ev)=>ev.stopPropagation();
+    searchInput.oninput = ()=>{
+      const q = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+      entries.forEach(e=>{
+        const match = !q || e.label.includes(q);
+        e.row.classList.toggle('hidden-by-search', !match);
+        if (match) visibleCount++;
+      });
+      noResultsEl.style.display = visibleCount===0 ? 'block' : 'none';
+    };
+  }
+
+  function updateSummary(){
+    const n = cfg.getSet().size, total = cfg.values.length;
+    labelEl.textContent = n===total ? ((cfg.allWord||'Todos')+' ('+total+')') : (n===0 ? (cfg.noneWord||'Ninguno') : (n+' de '+total));
+  }
+
+  todosBtn.onclick = ()=>{
+    cfg.setSet(new Set(cfg.values));
+    checkboxes.forEach(cb=>cb.checked=true);
+    updateSummary();
+    afterFilterChange();
+  };
+  limpiarBtn.onclick = ()=>{
+    cfg.setSet(new Set());
+    checkboxes.forEach(cb=>cb.checked=false);
+    updateSummary();
+    afterFilterChange();
+  };
+  toggle.onclick = (ev)=>{
+    ev.stopPropagation();
+    const wasOpen = wrap.classList.contains('open');
+    closeAllMultiDropdowns();
+    if (!wasOpen){
+      wrap.classList.add('open');
+      if (searchInput){ try{ searchInput.focus(); }catch(e){} }
+    }
+  };
+
+  updateSummary();
+}
+document.addEventListener('click', ()=>{ closeAllMultiDropdowns(); });
 
 function initFilters(){
   const anios = [...new Set(RAW.rows.map(r=>r[IDX.anio]).filter(x=>x))].sort();
@@ -751,19 +883,20 @@ function initFilters(){
   filters.empresas = new Set(empresas);
   filters.tiposViaje = new Set(tiposViaje);
 
-  const fAnio = document.getElementById('fAnio'); fAnio.innerHTML='';
-  anios.forEach(a=>{
-    const c = document.createElement('div'); c.className='chip active'; c.textContent=a; c.dataset.val=a;
-    c.onclick=()=>{ toggleSetVal(filters.anios,a,anios); c.classList.toggle('active', filters.anios.has(a)); afterFilterChange(); };
-    fAnio.appendChild(c);
+  const mesesTodos = [1,2,3,4,5,6,7,8,9,10,11,12];
+
+  setupMultiDropdown({
+    wrapId:'msddAnio', toggleId:'ddAnioToggle', panelId:'ddAnioPanel', optionsId:'fAnioOptions',
+    todosId:'btnAnioTodos', limpiarId:'btnAnioLimpiar',
+    values:anios, labelFn:v=>String(v), unitLabel:'años',
+    getSet:()=>filters.anios, setSet:s=>{ filters.anios=s; }
   });
 
-  const fMes = document.getElementById('fMes'); fMes.innerHTML='';
-  MESES.forEach((m,i)=>{
-    const mm=i+1;
-    const c = document.createElement('div'); c.className='chip active'; c.textContent=m; c.dataset.val=mm;
-    c.onclick=()=>{ toggleSetVal(filters.meses,mm,[1,2,3,4,5,6,7,8,9,10,11,12]); c.classList.toggle('active', filters.meses.has(mm)); afterFilterChange(); };
-    fMes.appendChild(c);
+  setupMultiDropdown({
+    wrapId:'msddMes', toggleId:'ddMesToggle', panelId:'ddMesPanel', optionsId:'fMesOptions',
+    todosId:'btnMesTodos', limpiarId:'btnMesLimpiar',
+    values:mesesTodos, labelFn:v=>MESES[v-1], unitLabel:'meses',
+    getSet:()=>filters.meses, setSet:s=>{ filters.meses=s; }
   });
 
   const fTipo = document.getElementById('fTipo'); fTipo.innerHTML='';
@@ -780,15 +913,13 @@ function initFilters(){
     fTipoViaje.appendChild(c);
   });
 
-  const fEmpresa = document.getElementById('fEmpresa'); fEmpresa.innerHTML='';
-  empresas.forEach(e=>{
-    const o = document.createElement('option'); o.value=e; o.textContent=e; o.selected=true;
-    fEmpresa.appendChild(o);
+  setupMultiDropdown({
+    wrapId:'msddEmpresa', toggleId:'ddEmpresaToggle', panelId:'ddEmpresaPanel', optionsId:'fEmpresaOptions',
+    todosId:'btnEmpresaTodos', limpiarId:'btnEmpresaLimpiar', searchId:'fEmpresaSearch',
+    allWord:'Todas', noneWord:'Ninguna',
+    values:empresas, labelFn:v=>v,
+    getSet:()=>filters.empresas, setSet:s=>{ filters.empresas=s; }
   });
-  fEmpresa.onchange = ()=>{
-    filters.empresas = new Set([...fEmpresa.selectedOptions].map(o=>o.value));
-    afterFilterChange();
-  };
 }
 function toggleSetVal(set, val, allVals){
   if (set.has(val)) set.delete(val); else set.add(val);
@@ -1109,6 +1240,15 @@ function truncate(s,n){ return s.length>n ? s.slice(0,n-1)+'…' : s; }
 
 /* ============================= VEHÍCULOS: búsqueda por placa ============================= */
 let placaChart = null;
+let empresaChart = null;
+let rangoChart = null;
+let rangoPropiosViajesChart = null;
+let rangoPropiosFactChart = null;
+function destroyRangoCharts(){
+  if (rangoChart){ rangoChart.destroy(); rangoChart = null; }
+  if (rangoPropiosViajesChart){ rangoPropiosViajesChart.destroy(); rangoPropiosViajesChart = null; }
+  if (rangoPropiosFactChart){ rangoPropiosFactChart.destroy(); rangoPropiosFactChart = null; }
+}
 
 function initPlacaSearch(){
   const dl = document.getElementById('placaList');
@@ -1230,6 +1370,265 @@ function renderPlacaDetail(placa){
     });
   } else {
     chartPlaceholder('chartPlacaAnio', 'Gráfico no disponible: no se pudo cargar Chart.js (sin conexión a internet).');
+  }
+}
+
+/* ---- 8b. Consultar empresa (lista desplegable + búsqueda) ---- */
+function initEmpresaSearch(){
+  const dl = document.getElementById('empresaList');
+  const empresas = [...new Set(RAW.rows.map(r=>empresaKey(r)))].filter(e=>e && e!==SIN_EMPRESA).sort();
+  dl.innerHTML = empresas.map(e=>`<option value="${e}">`).join('');
+
+  const input = document.getElementById('empresaSearch');
+  document.getElementById('btnBuscarEmpresa').onclick = ()=>lookupEmpresa(input.value);
+  document.getElementById('btnLimpiarEmpresa').onclick = ()=>{ input.value=''; renderEmpresaEmpty(); };
+  input.onkeydown = (ev)=>{ if (ev.key==='Enter') lookupEmpresa(input.value); };
+  renderEmpresaEmpty();
+}
+
+function renderEmpresaEmpty(){
+  document.getElementById('empresaResult').innerHTML =
+    '<div class="placa-empty">Escribe o elige una empresa (lista desplegable del campo) y presiona "Ver operaciones" (o Enter) para ver su historial.</div>';
+  if (empresaChart){ empresaChart.destroy(); empresaChart = null; }
+}
+
+function lookupEmpresa(query){
+  const q = String(query||'').trim().toUpperCase();
+  const resultEl = document.getElementById('empresaResult');
+  if (!q){ renderEmpresaEmpty(); return; }
+
+  const allEmpresas = [...new Set(RAW.rows.map(r=>empresaKey(r)))].filter(e=>e && e!==SIN_EMPRESA);
+  let target = allEmpresas.find(e=>e.toUpperCase()===q);
+
+  if (!target){
+    const partial = allEmpresas.filter(e=>e.toUpperCase().includes(q)).sort();
+    if (partial.length===1){
+      target = partial[0];
+    } else if (partial.length>1){
+      if (empresaChart){ empresaChart.destroy(); empresaChart = null; }
+      resultEl.innerHTML =
+        '<div class="placa-empty">Varias empresas coinciden con "'+q+'". Elige una:</div>' +
+        '<div class="placa-chips">'+partial.slice(0,30).map(e=>`<div class="placa-chip" data-empresa="${e}">${e}</div>`).join('')+'</div>';
+      resultEl.querySelectorAll('.placa-chip').forEach(chip=>{
+        chip.onclick = ()=>{ document.getElementById('empresaSearch').value = chip.dataset.empresa; lookupEmpresa(chip.dataset.empresa); };
+      });
+      return;
+    } else {
+      if (empresaChart){ empresaChart.destroy(); empresaChart = null; }
+      resultEl.innerHTML = '<div class="placa-empty">No se encontró ninguna empresa que coincida con "'+q+'".</div>';
+      return;
+    }
+  }
+  renderEmpresaDetail(target);
+}
+
+function renderEmpresaDetail(empresa){
+  const rows = RAW.rows.filter(r=>empresaKey(r)===empresa);
+  const resultEl = document.getElementById('empresaResult');
+  if (!rows.length){ resultEl.innerHTML = '<div class="placa-empty">Sin datos para esta empresa.</div>'; return; }
+
+  const totalViajes = rows.length;
+  const totalFact = sum(rows, IDX.vr_fact);
+  const anios = [...new Set(rows.map(r=>r[IDX.anio]))].filter(x=>x).sort();
+  const vehiculosN = new Set(rows.map(r=>r[IDX.placa]).filter(x=>x)).size;
+  const pendientes = rows.filter(r=>!r[IDX.factura]).length;
+
+  const byYear = {};
+  rows.forEach(r=>{ const y=r[IDX.anio]; if(!y) return; if(!byYear[y]) byYear[y]={count:0,fact:0}; byYear[y].count++; byYear[y].fact+=(r[IDX.vr_fact]||0); });
+  const years = Object.keys(byYear).sort();
+
+  const byPlaca = {};
+  rows.forEach(r=>{ const p=r[IDX.placa]; if(!p) return; if(!byPlaca[p]) byPlaca[p]={count:0,fact:0,tipo:r[IDX.tipo_vehiculo]}; byPlaca[p].count++; byPlaca[p].fact+=(r[IDX.vr_fact]||0); });
+  const placasOrdenadas = Object.entries(byPlaca).sort((a,b)=>b[1].fact-a[1].fact);
+
+  resultEl.innerHTML = `
+    <div class="placa-header">
+      <div class="placa-title">${empresa}</div>
+    </div>
+    <div class="kpis" style="margin:0 0 4px;">
+      <div class="kpi"><div class="lbl">Total de viajes</div><div class="val">${fmtInt(totalViajes)}</div><div class="sub">${anios.length ? (anios[0]+' – '+anios[anios.length-1]) : ''}</div></div>
+      <div class="kpi"><div class="lbl">Facturación total</div><div class="val">${fmtCOP(totalFact)}</div><div class="sub">Suma V/R Factura</div></div>
+      <div class="kpi"><div class="lbl">Vehículos distintos</div><div class="val">${fmtInt(vehiculosN)}</div><div class="sub">Con los que ha cargado</div></div>
+      <div class="kpi warn"><div class="lbl">Viajes sin factura</div><div class="val">${fmtInt(pendientes)}</div><div class="sub">${totalViajes?((100*pendientes/totalViajes).toFixed(1)+'% del total'):'0%'}</div></div>
+    </div>
+    <div class="placa-grid">
+      <div class="card">
+        <h3>Viajes y facturación por año</h3>
+        <div class="chart-wrap"><canvas id="chartEmpresaAnio"></canvas></div>
+        <div class="table-scroll" style="margin-top:12px;max-height:220px;">
+          <table>
+            <thead><tr><th>Año</th><th class="right">Viajes</th><th class="right">Facturación</th></tr></thead>
+            <tbody>${years.map(y=>`<tr><td>${y}</td><td class="right">${fmtInt(byYear[y].count)}</td><td class="right">${fmtCOP(byYear[y].fact)}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Vehículos con los que ha cargado</h3>
+        <div class="table-scroll" style="max-height:340px;">
+          <table>
+            <thead><tr><th>Placa</th><th>Tipo</th><th class="right">Viajes</th><th class="right">Facturación</th></tr></thead>
+            <tbody>${placasOrdenadas.map(([p,v])=>`<tr><td>${p}</td><td>${v.tipo||'-'}</td><td class="right">${fmtInt(v.count)}</td><td class="right">${fmtCOP(v.fact)}</td></tr>`).join('') || '<tr><td colspan="4">Sin registros</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  if (empresaChart){ empresaChart.destroy(); empresaChart = null; }
+  if (chartsOk()){
+    empresaChart = new Chart(document.getElementById('chartEmpresaAnio'), {
+      type:'bar',
+      data:{ labels:years, datasets:[{ label:'Viajes', data:years.map(y=>byYear[y].count), backgroundColor:GREEN_SHADES[3], borderRadius:4 }] },
+      options: baseOpts({y:{beginAtZero:true}})
+    });
+  } else {
+    chartPlaceholder('chartEmpresaAnio', 'Gráfico no disponible: no se pudo cargar Chart.js (sin conexión a internet).');
+  }
+}
+
+/* ---- 8c. Resumen por rango de fechas ---- */
+function initRangoResumen(){
+  const fechas = RAW.rows.map(r=>r[IDX.fecha]).filter(x=>x).sort();
+  const desdeEl = document.getElementById('rangoDesde');
+  const hastaEl = document.getElementById('rangoHasta');
+  if (fechas.length){
+    desdeEl.min = hastaEl.min = fechas[0];
+    desdeEl.max = hastaEl.max = fechas[fechas.length-1];
+  }
+  document.getElementById('btnRangoCalcular').onclick = calcularRango;
+  document.getElementById('btnRangoLimpiar').onclick = ()=>{
+    desdeEl.value=''; hastaEl.value=''; renderRangoEmpty();
+  };
+  renderRangoEmpty();
+}
+
+function renderRangoEmpty(){
+  document.getElementById('rangoResult').innerHTML =
+    '<div class="rango-empty">Elige una fecha de inicio y una de fin, luego presiona "Calcular resumen".</div>';
+  destroyRangoCharts();
+}
+
+function calcularRango(){
+  const desde = document.getElementById('rangoDesde').value;
+  const hasta = document.getElementById('rangoHasta').value;
+  const resultEl = document.getElementById('rangoResult');
+
+  if (!desde || !hasta){
+    resultEl.innerHTML = '<div class="rango-empty">Selecciona ambas fechas (inicio y fin) para calcular el resumen.</div>';
+    destroyRangoCharts();
+    return;
+  }
+  if (desde > hasta){
+    resultEl.innerHTML = '<div class="rango-empty">La fecha "Desde" no puede ser posterior a la fecha "Hasta".</div>';
+    destroyRangoCharts();
+    return;
+  }
+
+  const rows = RAW.rows.filter(r=>{
+    const f = r[IDX.fecha];
+    return f && f>=desde && f<=hasta;
+  });
+
+  if (!rows.length){
+    resultEl.innerHTML = '<div class="rango-empty">No se encontraron viajes entre '+desde+' y '+hasta+'.</div>';
+    destroyRangoCharts();
+    return;
+  }
+
+  const propios = rows.filter(r=>r[IDX.tipo_vehiculo]==='Propio');
+  const terceros = rows.filter(r=>r[IDX.tipo_vehiculo]==='Tercero');
+  const totalViajes = rows.length;
+  const totalFact = sum(rows, IDX.vr_fact);
+
+  const byEmpresa = {};
+  rows.forEach(r=>{ const e=empresaKey(r); if(!byEmpresa[e]) byEmpresa[e]={count:0,fact:0}; byEmpresa[e].count++; byEmpresa[e].fact+=(r[IDX.vr_fact]||0); });
+  const empresasOrdenadas = Object.entries(byEmpresa).sort((a,b)=>b[1].fact-a[1].fact);
+
+  const byPlacaPropio = {};
+  propios.forEach(r=>{ const p=r[IDX.placa]; if(!p) return; if(!byPlacaPropio[p]) byPlacaPropio[p]={count:0,fact:0}; byPlacaPropio[p].count++; byPlacaPropio[p].fact+=(r[IDX.vr_fact]||0); });
+  const propiosOrdenados = Object.entries(byPlacaPropio).sort((a,b)=>b[1].fact-a[1].fact);
+
+  resultEl.innerHTML = `
+    <div class="placa-header">
+      <div class="placa-title">${desde} → ${hasta}</div>
+    </div>
+    <div class="kpis" style="margin:0 0 4px;">
+      <div class="kpi"><div class="lbl">Total de viajes</div><div class="val">${fmtInt(totalViajes)}</div><div class="sub">En el periodo seleccionado</div></div>
+      <div class="kpi"><div class="lbl">Facturación total</div><div class="val">${fmtCOP(totalFact)}</div><div class="sub">Suma V/R Factura</div></div>
+      <div class="kpi"><div class="lbl">Viajes propios</div><div class="val">${fmtInt(propios.length)}</div><div class="sub">${totalViajes?((100*propios.length/totalViajes).toFixed(1)+'% del total'):'0%'}</div></div>
+      <div class="kpi"><div class="lbl">Viajes terceros</div><div class="val">${fmtInt(terceros.length)}</div><div class="sub">${totalViajes?((100*terceros.length/totalViajes).toFixed(1)+'% del total'):'0%'}</div></div>
+    </div>
+    <div class="placa-grid">
+      <div class="card">
+        <h3>Propios vs. terceros en el periodo</h3>
+        <div class="chart-wrap"><canvas id="chartRangoTipo"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Empresas con las que se cargó en el periodo</h3>
+        <div class="table-scroll" style="max-height:340px;">
+          <table>
+            <thead><tr><th>Empresa</th><th class="right">Viajes</th><th class="right">Facturación</th></tr></thead>
+            <tbody>${empresasOrdenadas.map(([e,v])=>`<tr><td>${e}</td><td class="right">${fmtInt(v.count)}</td><td class="right">${fmtCOP(v.fact)}</td></tr>`).join('') || '<tr><td colspan="3">Sin registros</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>Vehículos propios — actividad en el periodo</h3>
+      <div class="placa-grid">
+        <div>
+          <h3 style="font-size:13px;color:var(--gray);margin-bottom:8px;">Viajes por vehículo</h3>
+          <div class="chart-wrap" id="chartRangoPropiosViajesWrap"><canvas id="chartRangoPropiosViajes"></canvas></div>
+        </div>
+        <div>
+          <h3 style="font-size:13px;color:var(--gray);margin-bottom:8px;">Facturación por vehículo</h3>
+          <div class="chart-wrap" id="chartRangoPropiosFactWrap"><canvas id="chartRangoPropiosFact"></canvas></div>
+        </div>
+      </div>
+      <div class="note">Incluye únicamente los viajes con <b>TIPO VEHICULO = Propio</b> dentro del rango de fechas seleccionado arriba. Ambos gráficos están ordenados de mayor a menor facturación.</div>
+    </div>
+  `;
+
+  destroyRangoCharts();
+
+  // Altura dinámica de los gráficos de vehículos propios según cuántas placas haya (barras horizontales).
+  const propiosChartHeight = Math.max(260, propiosOrdenados.length*26);
+  const wrapViajes = document.getElementById('chartRangoPropiosViajesWrap');
+  const wrapFact = document.getElementById('chartRangoPropiosFactWrap');
+  if (wrapViajes) wrapViajes.style.height = propiosChartHeight+'px';
+  if (wrapFact) wrapFact.style.height = propiosChartHeight+'px';
+
+  if (chartsOk()){
+    rangoChart = new Chart(document.getElementById('chartRangoTipo'), {
+      type:'bar',
+      data:{
+        labels:['Nº de viajes','Facturación (millones COP)'],
+        datasets:[
+          { label:'Propios', data:[propios.length, sum(propios,IDX.vr_fact)/1e6], backgroundColor:GREEN_SHADES[1], borderRadius:4 },
+          { label:'Terceros', data:[terceros.length, sum(terceros,IDX.vr_fact)/1e6], backgroundColor:GREEN_SHADES[6], borderRadius:4 }
+        ]
+      },
+      options: baseOpts({y:{beginAtZero:true}})
+    });
+    if (propiosOrdenados.length){
+      rangoPropiosViajesChart = new Chart(document.getElementById('chartRangoPropiosViajes'), {
+        type:'bar',
+        data:{ labels:propiosOrdenados.map(e=>e[0]), datasets:[{ label:'Viajes', data:propiosOrdenados.map(e=>e[1].count), backgroundColor:GREEN_SHADES[2], borderRadius:4 }] },
+        options: baseOpts({x:{beginAtZero:true}}, true)
+      });
+      rangoPropiosFactChart = new Chart(document.getElementById('chartRangoPropiosFact'), {
+        type:'bar',
+        data:{ labels:propiosOrdenados.map(e=>e[0]), datasets:[{ label:'Facturación (COP)', data:propiosOrdenados.map(e=>e[1].fact), backgroundColor:GREEN_SHADES[1], borderRadius:4 }] },
+        options: baseOpts({x:{beginAtZero:true}}, true)
+      });
+    } else {
+      chartPlaceholder('chartRangoPropiosViajes', 'No hay vehículos propios con actividad en el periodo seleccionado.');
+      chartPlaceholder('chartRangoPropiosFact', 'No hay vehículos propios con actividad en el periodo seleccionado.');
+    }
+  } else {
+    chartPlaceholder('chartRangoTipo', 'Gráfico no disponible: no se pudo cargar Chart.js (sin conexión a internet).');
+    chartPlaceholder('chartRangoPropiosViajes', 'Gráfico no disponible: no se pudo cargar Chart.js (sin conexión a internet).');
+    chartPlaceholder('chartRangoPropiosFact', 'Gráfico no disponible: no se pudo cargar Chart.js (sin conexión a internet).');
   }
 }
 
