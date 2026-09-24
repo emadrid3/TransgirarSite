@@ -31,7 +31,55 @@ html,body{margin:0;padding:0;width:100%;height:100%;font-family:Arial,Helvetica,
 .user-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green-500);flex-shrink:0;}
 .user-pill b{color:var(--black);font-weight:bold;}
 .lock-note{font-size:10.5px;color:var(--gray);display:none;align-items:center;gap:4px;white-space:nowrap;}
-.status-pill{font-size:11px;padding:5px 10px;border-radius:20px;background:var(--green-50);border:1px solid var(--green-200);color:var(--green-800);white-space:nowrap;max-width:290px;overflow:hidden;text-overflow:ellipsis;}
+.status-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  min-width:250px;
+  max-width:360px;
+  padding:7px 12px;
+  border-radius:10px;
+  background:#f7fff9;
+  border:1px solid #86efac;
+  color:#166534;
+  box-shadow:0 2px 6px rgba(22,101,52,.08);
+}
+.status-icon{
+  width:22px;
+  height:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  border-radius:50%;
+  background:#16a34a;
+  color:#fff;
+  font-size:12px;
+  font-weight:bold;
+  box-shadow:0 2px 4px rgba(22,163,74,.22);
+}
+.status-content{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  line-height:1.2;
+}
+.status-title{
+  font-size:12px;
+  font-weight:700;
+  color:#166534;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+}
+.status-time{
+  margin-top:3px;
+  font-size:10px;
+  color:#6b7280;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+}
 button{font-family:Arial,Helvetica,sans-serif;cursor:pointer;border-radius:8px;border:none;color:#fff;padding:10px 16px;font-size:13px;font-weight:bold;letter-spacing:.01em;background:linear-gradient(180deg,var(--green-500) 0%,var(--green-600) 55%,var(--green-700) 100%);box-shadow:0 3px 0 var(--green-900),0 6px 14px rgba(13,59,32,.30),inset 0 1px 0 rgba(255,255,255,.25);}
 button:hover{transform:translateY(-1px);}
 button.secondary{background:linear-gradient(180deg,#fff 0%,#f3f4f6 100%);color:var(--green-700);box-shadow:0 3px 0 #cfd3d6,0 6px 12px rgba(0,0,0,.10),inset 0 1px 0 #fff;}
@@ -42,7 +90,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
   .app-header{padding:10px 12px;}
   .brand h1{font-size:15px;}
   .brand .sub{display:none;}
-  .status-pill{max-width:180px;}
+  .status-pill{min-width:220px;max-width:300px;}
 }
 @media (max-width:760px){
   .app-header{position:fixed;}
@@ -97,7 +145,13 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
 
   <div class="top-actions">
     <div class="action-group">
-      <span class="status-pill" id="dataStatusShell">Cargando datos…</span>
+      <span class="status-pill" id="dataStatusShell" title="">
+        <span class="status-icon">✓</span>
+        <span class="status-content">
+          <span class="status-title">Cargando datos</span>
+          <span class="status-time">—</span>
+        </span>
+      </span>
       <button class="secondary" id="btnRestoreShell" type="button" style="display:none;">Restaurar datos originales</button>
       <button id="btnUploadShell" type="button">Cargar Excel del día</button>
       <span class="lock-note" id="lockNoteShell">🔒 Solo autorizados pueden cargar archivos</span>
@@ -112,13 +166,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
   </div>
 </header>
 
-/* Contenedor principal del dashboard  DASHBOARD INFO*/
 <iframe id="dashboardFrame" src="./dashboardInfo.html" title="Dashboard de Operaciones"></iframe>
-
-/* Pie de página */
-<footer>
-  <p>&copy; 2026 Transgirar. Todos los derechos reservados.</p>
-</footer>
 
 <script>
 (function(){
@@ -211,6 +259,50 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     else uploadBtn.removeAttribute('title');
   }
 
+  function updateStatusDisplay(rawText){
+    const titleEl = statusEl.querySelector('.status-title');
+    const timeEl = statusEl.querySelector('.status-time');
+    if (!titleEl || !timeEl) return;
+
+    const statusText = (rawText || '').replace(/\s+/g, ' ').trim();
+    if (!statusText) {
+      titleEl.textContent = 'Cargando datos';
+      timeEl.textContent = '';
+      statusEl.title = 'Cargando datos';
+      statusEl.setAttribute('aria-label', 'Cargando datos');
+      return;
+    }
+
+    // Detecta cualquier mensaje de datos cargados, incluso después de recargar.
+    // Algunos textos pueden cambiar entre “tu archivo” y “tu último archivo”.
+    if (/datos\s+cargados/i.test(statusText)) {
+      const match = statusText.match(/\((.*?)\)/);
+      const normalized = statusText.toLowerCase();
+
+      if (normalized.includes('último archivo')) {
+        titleEl.textContent = 'Datos cargados desde el último archivo';
+      } else if (normalized.includes('tu archivo')) {
+        titleEl.textContent = 'Datos cargados desde tu archivo';
+      } else {
+        titleEl.textContent = 'Datos cargados';
+      }
+
+      timeEl.textContent = match
+        ? match[1].replace(/, /, ' · ')
+        : '';
+
+      // Conserva el mensaje completo para tooltip y accesibilidad.
+      statusEl.title = statusText;
+      statusEl.setAttribute('aria-label', statusText);
+    } else {
+      // Para cualquier otro estado, mostramos el texto completo sin truncarlo.
+      titleEl.textContent = statusText;
+      timeEl.textContent = '';
+      statusEl.title = statusText;
+      statusEl.setAttribute('aria-label', statusText);
+    }
+  }
+
   function syncFromDashboard(){
     const doc = dashboardDoc();
     if (!doc) return;
@@ -221,7 +313,9 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     const innerRestore = doc.getElementById('btnRestore');
     const innerStatus = doc.getElementById('dataStatus');
 
-    if (innerStatus) statusEl.textContent = innerStatus.textContent || 'Datos cargados';
+    if (innerStatus) {
+      updateStatusDisplay(innerStatus.textContent);
+    }
 
     if (innerRestore) {
       restoreBtn.style.display = innerRestore.style.display === 'none' ? 'none' : 'inline-block';
@@ -229,7 +323,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
 
     if (innerStatus && !innerStatus.dataset.headerObserver) {
       const observer = new MutationObserver(function(){
-        statusEl.textContent = innerStatus.textContent || 'Datos cargados';
+        updateStatusDisplay(innerStatus.textContent);
       });
       observer.observe(innerStatus, {childList:true,characterData:true,subtree:true});
       innerStatus.dataset.headerObserver = '1';
