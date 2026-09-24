@@ -152,7 +152,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
           <span class="status-time">—</span>
         </span>
       </span>
-      <button class="secondary" id="btnRestoreShell" type="button" style="display:none;">Restaurar datos originales</button>
+      <button class="secondary" id="btnRestoreShell" type="button" style="display:none;">Restaurar datos anteriores</button>
       <button id="btnUploadShell" type="button">Cargar Excel del día</button>
       <span class="lock-note" id="lockNoteShell">🔒 Solo autorizados pueden cargar archivos</span>
     </div>
@@ -250,13 +250,28 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     catch(e) { return null; }
   }
 
+
   function syncPermission(){
     const allowed = canUpload();
+
+    // Botón cargar Excel
     uploadBtn.disabled = !allowed;
     uploadBtn.classList.toggle('upload-locked', !allowed);
+
+    // Botón restaurar datos
+    restoreBtn.disabled = !allowed;
+    restoreBtn.classList.toggle('upload-locked', !allowed);
+
+    // Mensaje de permisos
     lockEl.style.display = allowed ? 'none' : 'inline-flex';
-    if (!allowed) uploadBtn.title = 'Solo andres.gil o emadrid3 pueden cargar un nuevo archivo';
-    else uploadBtn.removeAttribute('title');
+
+    if (!allowed) {
+      uploadBtn.title = 'Solo andres.gil o emadrid3 pueden cargar archivos';
+      restoreBtn.title = 'Solo andres.gil o emadrid3 pueden restaurar los datos';
+    } else {
+      uploadBtn.removeAttribute('title');
+      restoreBtn.removeAttribute('title');
+    }
   }
 
   function updateStatusDisplay(rawText){
