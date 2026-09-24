@@ -112,7 +112,13 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
   </div>
 </header>
 
+/* Contenedor principal del dashboard  DASHBOARD INFO*/
 <iframe id="dashboardFrame" src="./dashboardInfo.html" title="Dashboard de Operaciones"></iframe>
+
+/* Pie de página */
+<footer>
+  <p>&copy; 2026 Transgirar. Todos los derechos reservados.</p>
+</footer>
 
 <script>
 (function(){
@@ -123,17 +129,61 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     return (sessionStorage.getItem(AUTH_KEY) || '').trim();
   }
 
+  function clearAuthentication(){
+    // Eliminar la sesión principal
+    sessionStorage.removeItem(AUTH_KEY);
+
+    // Eliminar posibles tokens/credenciales adicionales
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('accessToken');
+    sessionStorage.removeItem('refreshToken');
+
+    localStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem('token');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+
+    // Si la aplicación utiliza Cache Storage, elimina esas cachés.
+    // Esto NO equivale a borrar el caché HTTP general del navegador.
+    if ('caches' in window) {
+      caches.keys().then(function(keys){
+        return Promise.all(keys.map(function(key){
+          return caches.delete(key);
+        }));
+      }).catch(function(){});
+    }
+  }
+
+  function logoutAndRedirect(){
+    clearAuthentication();
+
+    // replace() evita que esta página quede como entrada inmediata del historial.
+    window.location.replace('./login.html');
+  }
+
   function requireAuth(){
     const user = currentUser();
+
     if (!user){
-      window.location.href = './login.html';
+      window.location.replace('./login.html');
       return null;
     }
+
     return user;
   }
 
   const user = requireAuth();
   if (!user) return;
+
+  // Protege el dashboard cuando el navegador restaura una página desde bfcache.
+  // Esto cubre el caso: cerrar sesión -> Login -> Atrás.
+  window.addEventListener('pageshow', function(){
+    if (!currentUser()){
+      window.location.replace('./login.html');
+    }
+  });
 
   document.querySelector('#userLabel b').textContent = user;
 
@@ -208,8 +258,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
   });
 
   document.getElementById('btnLogout').addEventListener('click', function(){
-    sessionStorage.removeItem(AUTH_KEY);
-    window.location.href = './login.html';
+    logoutAndRedirect();
   });
 
   frame.addEventListener('load', function(){
