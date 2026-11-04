@@ -69,7 +69,7 @@ async function verifyLogin(entry, password) {
 
 async function loadUsers() {
   const res = await fetch("./build-info.txt", { cache: "no-store" });
-  if (!res.ok) return [];
+  if (!res.ok) throw new Error("No se pudo cargar build-info.txt (HTTP " + res.status + ")");
   const text = await res.text();
   try {
     return JSON.parse(text || "[]");

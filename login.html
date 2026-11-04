@@ -82,7 +82,12 @@
                     errorBox.classList.remove('hidden');
                 }
             } catch (err) {
-                errorBox.textContent = 'No se pudo leer la base de usuarios (site-data.txt).';
+                console.error(err);
+                if (window.location.protocol === 'file:') {
+                    errorBox.innerHTML = 'Estás abriendo la página como archivo local (<code>file://</code>). Los navegadores bloquean <code>fetch()</code> en archivos locales por seguridad.<br><br>Para probar localmente, abre la carpeta con un servidor web local (ej. extensión <strong>Live Server</strong> en VS Code o ejecutando <code>python3 -m http.server</code> en la terminal).';
+                } else {
+                    errorBox.textContent = 'No se pudo leer la base de usuarios (build-info.txt).';
+                }
                 errorBox.classList.remove('hidden');
             } finally {
                 submitBtn.disabled = false;

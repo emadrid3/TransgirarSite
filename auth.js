@@ -36,7 +36,7 @@ async function deriveKey(password, saltBytes) {
   );
 }
 
-/** Crea una entrada cifrada nueva para un usuario. Devuelve el objeto listo para guardar en site-data.txt */
+/** Crea una entrada cifrada nueva para un usuario. Devuelve el objeto listo para guardar en build-info.txt */
 async function createUserEntry(username, password) {
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -68,8 +68,8 @@ async function verifyLogin(entry, password) {
 }
 
 async function loadUsers() {
-  const res = await fetch("./site-data.txt", { cache: "no-store" });
-  if (!res.ok) return [];
+  const res = await fetch("./build-info.txt", { cache: "no-store" });
+  if (!res.ok) throw new Error("No se pudo cargar build-info.txt (HTTP " + res.status + ")");
   const text = await res.text();
   try {
     return JSON.parse(text || "[]");

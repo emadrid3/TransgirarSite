@@ -240,6 +240,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
         </span>
       </span>
       <button class="secondary" id="btnRestoreShell" type="button" style="display:none;">Restaurar datos anteriores</button>
+      <button class="secondary" id="btnConfigTokenShell" type="button" style="display:none;" title="Configurar Token de GitHub para sincronización">⚙️ Token GitHub</button>
       <button id="btnUploadShell" type="button">Cargar Excel del día</button>
       <span class="lock-note" id="lockNoteShell">🔒 Usuario sin permisos para modificar </span>
     </div>
@@ -329,6 +330,7 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
   const frame = document.getElementById('dashboardFrame');
   const uploadBtn = document.getElementById('btnUploadShell');
   const restoreBtn = document.getElementById('btnRestoreShell');
+  const configTokenBtn = document.getElementById('btnConfigTokenShell');
   const statusEl = document.getElementById('dataStatusShell');
   const lockEl = document.getElementById('lockNoteShell');
 
@@ -348,6 +350,11 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     // Botón restaurar datos
     restoreBtn.disabled = !allowed;
     restoreBtn.classList.toggle('upload-locked', !allowed);
+
+    // Botón configurar token
+    if (configTokenBtn) {
+      configTokenBtn.style.display = allowed ? 'inline-block' : 'none';
+    }
 
     // Mensaje de permisos
     lockEl.style.display = allowed ? 'none' : 'inline-flex';
@@ -376,12 +383,14 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     }
 
     // Detecta cualquier mensaje de datos cargados, incluso después de recargar.
-    // Algunos textos pueden cambiar entre “tu archivo” y “tu último archivo”.
-    if (/datos\s+cargados/i.test(statusText)) {
+    // Algunos textos pueden cambiar entre “tu archivo”, “tu último archivo” o “sincronizados desde GitHub”.
+    if (/datos\s+(cargados|sincronizados)/i.test(statusText)) {
       const match = statusText.match(/\((.*?)\)/);
       const normalized = statusText.toLowerCase();
 
-      if (normalized.includes('último archivo')) {
+      if (normalized.includes('sincronizados')) {
+        titleEl.textContent = 'Datos sincronizados (GitHub)';
+      } else if (normalized.includes('último archivo')) {
         titleEl.textContent = 'Datos cargados desde el último archivo';
       } else if (normalized.includes('tu archivo')) {
         titleEl.textContent = 'Datos cargados desde tu archivo';
@@ -452,6 +461,14 @@ iframe#dashboardFrame{position:fixed;left:0;right:0;bottom:0;top:82px;width:100%
     const innerRestore = doc && doc.getElementById('btnRestore');
     if (innerRestore) innerRestore.click();
   });
+
+  if (configTokenBtn) {
+    configTokenBtn.addEventListener('click', function(){
+      const doc = dashboardDoc();
+      const innerConfig = doc && doc.getElementById('btnConfigToken');
+      if (innerConfig) innerConfig.click();
+    });
+  }
 
   document.getElementById('btnLogout').addEventListener('click', function(){
     logoutAndRedirect();

@@ -217,6 +217,8 @@ table tbody tr:hover{background:#fafafa;}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--gray);text-align:center;}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--black);color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;max-width:340px;z-index:200;box-shadow:0 4px 14px rgba(0,0,0,.2);}
 .legend-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;}
+.gh-modal-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:10000;padding:14px;box-sizing:border-box;}
+.gh-modal-box{background:#ffffff;border-radius:12px;max-width:500px;width:100%;box-shadow:0 20px 25px -5px rgba(0,0,0,0.25);padding:22px;font-family:Arial,Helvetica,sans-serif;color:#1f2937;box-sizing:border-box;}
 </style>
 </head>
 <body>
@@ -232,6 +234,7 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-si
   <span id="dataStatus"></span>
   <button id="btnRestore" type="button" style="display:none;">Restaurar datos originales</button>
   <button id="btnUpload" type="button" style="display:none;">Cargar Excel del día</button>
+  <button id="btnConfigToken" type="button" style="display:none;">Configurar Token GitHub</button>
   <input type="file" id="fileInput" accept=".xlsx,.xls">
   <span id="lockNote"></span>
 </div>
@@ -492,6 +495,290 @@ const LS_DATE_KEY = 'tg_dashboard_date_v1';
 
 const filters = { anios:new Set(), meses:new Set(), tipos:new Set(), empresas:new Set(), tiposViaje:new Set() };
 
+/* ============================= GITHUB SYNC ============================= */
+const GITHUB_OWNER = 'emadrid3';
+const GITHUB_REPO = 'TransgirarSite';
+const GITHUB_BRANCH = 'main';
+const GITHUB_FILE_PATH = 'data.json';
+const TOKEN_STORAGE_KEY = 'tg_github_token';
+
+async function loadRemoteData(){
+  const cacheBuster = '?t=' + Date.now();
+  // 1. Probar desde GitHub Raw (actualización inmediata tras un commit)
+  try {
+    const rawUrl = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_BRANCH}/${GITHUB_FILE_PATH}${cacheBuster}`;
+    const res = await fetch(rawUrl, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.rows) && data.rows.length) {
+        return { data, source: 'github_raw' };
+      }
+    }
+  } catch(e) {}
+
+  // 2. Probar desde el servidor web local o GitHub Pages (./data.json)
+  try {
+    const localUrl = `./${GITHUB_FILE_PATH}${cacheBuster}`;
+    const res = await fetch(localUrl, { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.rows) && data.rows.length) {
+        return { data, source: 'local_file' };
+      }
+    }
+  } catch(e) {}
+
+  return null;
+}
+
+async function commitFileToGitHub({ owner, repo, branch = 'main', path, content, message, token }){
+  const base64Content = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result || '';
+      resolve(result.includes(',') ? result.split(',')[1] : result);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(new Blob([content], { type: 'application/json;charset=utf-8' }));
+  });
+
+  const headers = {
+    'Authorization': `Bearer ${token.trim()}`,
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+
+  // 1. Intentar con Contents API (PUT /repos/{owner}/{repo}/contents/{path})
+  try {
+    let currentSha = null;
+    const getRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
+      headers,
+      cache: 'no-store'
+    });
+    if (getRes.ok) {
+      const getData = await getRes.json();
+      currentSha = getData.sha;
+    }
+
+    const putBody = {
+      message,
+      content: base64Content,
+      branch
+    };
+    if (currentSha) putBody.sha = currentSha;
+
+    const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(putBody)
+    });
+
+    if (putRes.ok) {
+      const putData = await putRes.json();
+      return putData.commit ? putData.commit.sha : 'ok';
+    }
+
+    const errData = await putRes.json().catch(() => ({}));
+    if (putRes.status === 401) {
+      throw new Error('Token de GitHub inválido o expirado (401 Bad credentials).');
+    }
+    if (putRes.status === 403 && errData.message && errData.message.includes('Resource not accessible')) {
+      throw new Error('El token no tiene permisos sobre este repositorio. Te recomendamos usar un Token (classic) con permiso "repo".');
+    }
+  } catch(err) {
+    if (err.message && (err.message.includes('401') || err.message.includes('permisos') || err.message.includes('Token'))) {
+      throw err;
+    }
+  }
+
+  // 2. Método de respaldo: Git Data Blobs API
+  const blobRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/blobs`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ content: base64Content, encoding: 'base64' })
+  });
+  if (!blobRes.ok) {
+    const errData = await blobRes.json().catch(() => ({}));
+    if (blobRes.status === 401) throw new Error('Token de GitHub inválido o expirado (401 Bad credentials).');
+    if (blobRes.status === 404) throw new Error('Repositorio no encontrado o token sin permisos de escritura.');
+    if (errData.message && errData.message.includes('Resource not accessible')) {
+      throw new Error('El token no tiene permisos para escribir en este repositorio. Por favor genera un Token (classic) con permiso "repo".');
+    }
+    throw new Error(errData.message || `Error al crear blob en GitHub (HTTP ${blobRes.status})`);
+  }
+  const { sha: blobSha } = await blobRes.json();
+
+  // Obtener referencia de rama
+  const refRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/ref/heads/${branch}`, {
+    headers,
+    cache: 'no-store'
+  });
+  if (!refRes.ok) throw new Error(`No se pudo acceder a la rama '${branch}' (HTTP ${refRes.status}).`);
+  const refData = await refRes.json();
+  const latestCommitSha = refData.object.sha;
+
+  // Obtener commit actual para obtener base tree SHA
+  const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits/${latestCommitSha}`, {
+    headers,
+    cache: 'no-store'
+  });
+  if (!commitRes.ok) throw new Error(`No se pudo leer el último commit (HTTP ${commitRes.status}).`);
+  const commitData = await commitRes.json();
+  const baseTreeSha = commitData.tree.sha;
+
+  // Crear nuevo árbol con el archivo modificado
+  const treeRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      base_tree: baseTreeSha,
+      tree: [{ path, mode: '100644', type: 'blob', sha: blobSha }]
+    })
+  });
+  if (!treeRes.ok) throw new Error(`Error al construir árbol Git (HTTP ${treeRes.status}).`);
+  const treeData = await treeRes.json();
+  const newTreeSha = treeData.sha;
+
+  // Crear nuevo commit
+  const newCommitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/commits`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      message,
+      tree: newTreeSha,
+      parents: [latestCommitSha]
+    })
+  });
+  if (!newCommitRes.ok) throw new Error(`Error al crear commit (HTTP ${newCommitRes.status}).`);
+  const newCommitData = await newCommitRes.json();
+  const newCommitSha = newCommitData.sha;
+
+  // Actualizar la rama
+  const updateRefRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs/heads/${branch}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({ sha: newCommitSha, force: false })
+  });
+  if (!updateRefRes.ok) throw new Error(`Error al actualizar la rama '${branch}' (HTTP ${updateRefRes.status}).`);
+
+  return newCommitSha;
+}
+
+let __pendingTokenResolve = null;
+function promptGitHubTokenModal(isManualConfig = false){
+  return new Promise((resolve) => {
+    __pendingTokenResolve = resolve;
+    const modal = document.getElementById('ghTokenModal');
+    const input = document.getElementById('ghTokenInput');
+    const deleteBtn = document.getElementById('ghTokenDeleteBtn');
+    const savedToken = localStorage.getItem(TOKEN_STORAGE_KEY) || '';
+
+    input.value = savedToken;
+    deleteBtn.style.display = savedToken ? 'inline-block' : 'none';
+    modal.dataset.manual = isManualConfig ? '1' : '0';
+    modal.style.display = 'flex';
+    input.focus();
+  });
+}
+
+function closeGitHubTokenModal(result){
+  const modal = document.getElementById('ghTokenModal');
+  modal.style.display = 'none';
+  if (__pendingTokenResolve){
+    const r = __pendingTokenResolve;
+    __pendingTokenResolve = null;
+    r(result);
+  }
+}
+
+function initGitHubModalEvents(){
+  const modal = document.getElementById('ghTokenModal');
+  const closeBtn = document.getElementById('ghModalClose');
+  const cancelBtn = document.getElementById('ghModalCancel');
+  const submitBtn = document.getElementById('ghModalSubmit');
+  const deleteBtn = document.getElementById('ghTokenDeleteBtn');
+  const input = document.getElementById('ghTokenInput');
+  const saveCheck = document.getElementById('ghTokenSaveCheck');
+
+  closeBtn.addEventListener('click', () => closeGitHubTokenModal(null));
+  cancelBtn.addEventListener('click', () => closeGitHubTokenModal(null));
+
+  submitBtn.addEventListener('click', () => {
+    const val = (input.value || '').trim();
+    if (!val){
+      alert('Por favor ingresa un token de GitHub o cancela si deseas guardar solo localmente.');
+      return;
+    }
+    if (saveCheck.checked){
+      localStorage.setItem(TOKEN_STORAGE_KEY, val);
+    } else {
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+    if (modal.dataset.manual === '1'){
+      toast('Token de GitHub guardado correctamente.');
+    }
+    closeGitHubTokenModal(val);
+  });
+
+  deleteBtn.addEventListener('click', () => {
+    if (confirm('¿Deseas eliminar el token guardado en este navegador?')){
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      input.value = '';
+      deleteBtn.style.display = 'none';
+      toast('Token eliminado de este navegador.');
+      closeGitHubTokenModal(null);
+    }
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeGitHubTokenModal(null);
+  });
+}
+
+async function syncDataToGitHub(dataToSync){
+  let token = localStorage.getItem(TOKEN_STORAGE_KEY);
+  if (!token){
+    token = await promptGitHubTokenModal(false);
+    if (!token){
+      toast('Los cambios quedaron guardados solo en este computador.');
+      return;
+    }
+  }
+
+  setStatus('Sincronizando datos con GitHub...', true);
+  toast('Sincronizando con GitHub para todos los usuarios...');
+
+  try {
+    const jsonStr = JSON.stringify(dataToSync);
+    const commitMsg = `Actualización de datos por ${dataToSync.updated_by || 'usuario'} (${dataToSync.updated_at || ''}) [skip ci]`;
+
+    await commitFileToGitHub({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      branch: GITHUB_BRANCH,
+      path: GITHUB_FILE_PATH,
+      content: jsonStr,
+      message: commitMsg,
+      token: token
+    });
+
+    const d = dataToSync.updated_at || '';
+    const u = dataToSync.updated_by ? ' por ' + dataToSync.updated_by : '';
+    setStatus('Datos sincronizados desde GitHub (' + d + u + ')', true);
+    toast('✅ ¡Datos sincronizados con éxito en GitHub! Todos los usuarios recibirán esta actualización al entrar o recargar.');
+  } catch(err){
+    console.error('Error al sincronizar con GitHub:', err);
+    if (err.message && err.message.includes('401')){
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+      toast('❌ El Token de GitHub es inválido o ha expirado. Por favor ingresa uno nuevo.');
+      promptGitHubTokenModal(false);
+    } else {
+      toast('⚠️ Error al sincronizar con GitHub: ' + err.message + '. Los datos se guardaron localmente.');
+      setStatus('Datos cargados desde tu archivo (' + (dataToSync.updated_at || '') + ')', true);
+    }
+  }
+}
+
 /* ============================= BOOT ============================= */
 function boot(){
   try{
@@ -507,6 +794,8 @@ function boot(){
 function bootInner(){
   configureChartDefaults();
   showLibBanner();
+  initGitHubModalEvents();
+
   const embedded = JSON.parse(document.getElementById('raw-data').textContent);
   const coordData = JSON.parse(document.getElementById('raw-coords').textContent);
   COORDS = coordData.coords; ALIASES = coordData.aliases; DEPT_SUFFIXES = coordData.dept_suffixes;
@@ -547,6 +836,29 @@ function bootInner(){
   initRangoResumen();
   renderAll();
 
+  // Comprobar en segundo plano si hay datos actualizados en GitHub
+  loadRemoteData().then(remote => {
+    if (remote && remote.data) {
+      const remoteFieldsOk = Array.isArray(remote.data.fields) &&
+        remote.data.fields.length === FIELDS.length &&
+        remote.data.fields.every((f,i)=>f===FIELDS[i]);
+      if (remoteFieldsOk && remote.data.rows && remote.data.rows.length) {
+        RAW = remote.data;
+        const d = RAW.updated_at || '';
+        const u = RAW.updated_by ? ' por ' + RAW.updated_by : '';
+        const label = 'Datos sincronizados desde GitHub' + (d ? ' (' + d + u + ')' : '');
+        setStatus(label, true);
+        initFilters();
+        initPlacaSearch();
+        initEmpresaSearch();
+        initRangoResumen();
+        renderAll();
+      }
+    }
+  }).catch(err => {
+    console.warn('No se pudo verificar sincronización remota:', err);
+  });
+
   document.getElementById('btnUpload').addEventListener('click', ()=>document.getElementById('fileInput').click());
   document.getElementById('fileInput').addEventListener('change', handleUpload);
   document.getElementById('btnRestore').addEventListener('click', ()=>{
@@ -556,6 +868,8 @@ function bootInner(){
     document.getElementById('btnRestore').style.display='none';
     initFilters(); initPlacaSearch(); initEmpresaSearch(); initRangoResumen(); renderAll();
   });
+  const configBtn = document.getElementById('btnConfigToken');
+  if (configBtn) configBtn.addEventListener('click', () => promptGitHubTokenModal(true));
   document.getElementById('btnResetFilters').addEventListener('click', ()=>{ initFilters(); renderAll(); });
 }
 
@@ -740,15 +1054,15 @@ function handleUpload(ev){
       });
       if (!rows.length){ toast('No se encontraron registros válidos (columna CONSECUTIVO) en el archivo cargado.'); return; }
       window.__lastUploadSkippedYellow = totalSkippedYellow;
-      RAW = { fields: FIELDS, rows: rows };
       const now = new Date().toLocaleString('es-CO');
+      const currentUser = (sessionStorage.getItem('transgirar_auth') || 'usuario').trim();
+      RAW = { fields: FIELDS, rows: rows, updated_at: now, updated_by: currentUser };
       try{
         localStorage.setItem(LS_KEY, JSON.stringify(RAW));
         localStorage.setItem(LS_DATE_KEY, now);
         setStatus('Datos cargados desde tu archivo ('+now+')', true);
       }catch(err){
-        setStatus('Datos cargados en esta sesión (archivo grande, no se guardó localmente)', true);
-        toast('El archivo es demasiado grande para guardarse en el navegador. Los datos se mantendrán mientras no recargues la página.');
+        setStatus('Datos cargados en esta sesión ('+now+')', true);
       }
       initFilters();
       initPlacaSearch();
@@ -756,7 +1070,10 @@ function handleUpload(ev){
       initRangoResumen();
       renderAll();
       const anuladoMsg = totalSkippedYellow>0 ? (' Se excluyeron '+totalSkippedYellow+' manifiestos anulados.') : '';
-      toast('Archivo cargado correctamente: '+rows.length+' registros.'+anuladoMsg);
+      toast('Archivo procesado: '+rows.length+' registros.'+anuladoMsg);
+
+      // Sincronizar con GitHub en segundo plano
+      syncDataToGitHub(RAW);
     }catch(err){
       console.error(err);
       toast('Error al leer el archivo: '+err.message);
@@ -1694,5 +2011,50 @@ try{
     '. Intenta recargar la página.</div>');
 }
 </script>
+
+<!-- Modal Token de GitHub para sincronización -->
+<div id="ghTokenModal" class="gh-modal-backdrop" style="display:none;">
+  <div class="gh-modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:22px;">🔄</span>
+        <h3 style="margin:0;font-size:16px;font-weight:bold;color:#111;">Sincronizar archivo con GitHub</h3>
+      </div>
+      <button id="ghModalClose" type="button" style="background:transparent;border:none;box-shadow:none;color:#888;font-size:18px;cursor:pointer;padding:2px 6px;">✕</button>
+    </div>
+
+    <p style="font-size:12px;color:#4b5563;line-height:1.5;margin:0 0 12px 0;">
+      Para que todos los usuarios (<strong>andres.gil</strong>, <strong>emadrid3</strong>, <strong>transgirar</strong>) vean este archivo al recargar o entrar al dashboard, ingresa tu <strong>Personal Access Token de GitHub</strong> con permiso en el repositorio <code>emadrid3/TransgirarSite</code>.
+    </p>
+
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:12px;font-weight:bold;color:#374151;margin-bottom:4px;">GitHub Personal Access Token (PAT):</label>
+      <input id="ghTokenInput" type="password" placeholder="ghp_... o github_pat_..." style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:12px;font-family:monospace;box-sizing:border-box;">
+      <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between;">
+        <label style="font-size:11px;color:#4b5563;cursor:pointer;display:flex;align-items:center;gap:5px;">
+          <input id="ghTokenSaveCheck" type="checkbox" checked style="cursor:pointer;">
+          Recordar token en este navegador
+        </label>
+        <button id="ghTokenDeleteBtn" type="button" style="display:none;background:transparent;border:none;color:#dc2626;font-size:11px;cursor:pointer;text-decoration:underline;padding:0;">Eliminar token guardado</button>
+      </div>
+    </div>
+
+    <details style="background:#f9fafb;border-radius:6px;padding:8px 10px;font-size:11px;color:#4b5563;margin-bottom:14px;border:1px solid #e5e7eb;">
+      <summary style="font-weight:bold;cursor:pointer;color:#1f2937;">¿Cómo generar tu token en GitHub? (Pasos rápidos)</summary>
+      <ol style="margin:6px 0 0 0;padding-left:16px;line-height:1.5;">
+        <li>En GitHub, ve a tu perfil &rarr; <strong>Settings &rarr; Developer Settings &rarr; Personal access tokens &rarr; Tokens (classic)</strong>.</li>
+        <li>Haz clic en <strong>Generate new token (classic)</strong>.</li>
+        <li>Nombre: <em>Transgirar Sync</em> y marca la casilla <strong>repo</strong> (o <strong>Contents: Read & write</strong>).</li>
+        <li>Copia el token y pégalo arriba.</li>
+      </ol>
+    </details>
+
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button id="ghModalCancel" type="button" class="secondary" style="padding:7px 12px;font-size:12px;">Solo guardar localmente</button>
+      <button id="ghModalSubmit" type="button" style="padding:7px 14px;font-size:12px;">Sincronizar en GitHub</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
